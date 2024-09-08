@@ -34,7 +34,13 @@
             height: auto;
         }
 
-        caption {
+        figure {
+            display: inline-block;
+            margin: 0;
+            text-align: center;
+        }
+
+        figcaption {
             margin-top: 5px;
             font-weight: bold;
         }
@@ -44,15 +50,19 @@
     <div class="container">
         <div class="row">
             <div class="image-wrapper">
-                <img src="cathedral.jpg_processed_no_sobel.jpg" alt="Cathedral Image">
-                <caption>Green offset: [2, 5] and Red offset: [3, 12]</caption>
+                <figure>
+                    <img src="cathedral.jpg_processed_no_sobel.jpg" alt="Cathedral Image">
+                    <figcaption>Green offset: [2, 5] and Red offset: [3, 12]</figcaption>
+                </figure>
             </div>
         </div>
 
         <div class="row">
             <div class="image-wrapper">
-                <img src="monastery.jpg_processed_no_sobel.jpg" alt="Monastery Image">
-                <caption>Red offset: [2, 3] and Green Offset: [2, -3]</caption>
+                <figure>
+                    <img src="monastery.jpg_processed_no_sobel.jpg" alt="Monastery Image">
+                    <figcaption>Red offset: [2, 3] and Green offset: [2, -3]</figcaption>
+                </figure>
             </div>
         </div>
     </div>
