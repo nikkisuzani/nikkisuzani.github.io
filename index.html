@@ -199,7 +199,7 @@
         </div>
 
         <h1> Bells and Whistles </h1>
-        <p> For bells and whistles, I used openCV to implement a sobel filter. I did this by using cv.Sobel to detect both horizontal edges and vertical edges, and then combining the two values with square root of the sum of squares to combine them into a single scalar to detect all edges. Then, I ran SSD on this result to get the correct shift, and applied that shift to the original image. This improved my emir really substantially, as you can see in the images above of the Emir with no sobel filtering and the Emir with sobel filtering.</p>
+        <p> For bells and whistles, I used openCV to implement a sobel filter. I did this by using cv.Sobel to detect both horizontal edges and vertical edges, and then combining the two values with square root of the sum of squares to combine them into a single scalar to detect all edges. Then, I ran SSD on this result to get the correct shift, and applied that shift to the original image. This improved my emir really substantially, as you can see in the images above of the Emir with no sobel filtering and the Emir with sobel filtering. The reason that sobel filtering worked here is because it does edge detection, which for the Emir image, which had issues with pixel intensity being different at different layers, was a more reasonable approach to ensure that the intensity affected the alignment less.</p>
     </div>
 </body>
 </html>
