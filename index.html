@@ -12,10 +12,18 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            flex-direction: column;
         }
 
         .container {
             width: 80%;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 2em; /* Larger font size */
+            font-weight: bold; /* Bold text */
+            margin-bottom: 20px;
         }
 
         .row {
@@ -49,11 +57,15 @@
 </head>
 <body>
     <div class="container">
+        <!-- Title -->
+        <div class="title">Images</div>
+
+        <!-- Image Rows -->
         <div class="row">
             <div class="image-wrapper">
                 <figure>
                     <img src="cathedral.jpg_processed_no_sobel.jpg" alt="Cathedral Image">
-                    <figcaption>Red offset: [3, 12] and Green offset: [2, 5]</figcaption>
+                    <figcaption>Green offset: [2, 5] and Red offset: [3, 12]</figcaption>
                 </figure>
             </div>
         </div>
