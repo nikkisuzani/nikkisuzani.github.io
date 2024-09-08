@@ -1,16 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Portfolio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Grid</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 80%;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .image-wrapper {
+            text-align: center;
+            margin: 0 20px;
+        }
+
+        img {
+            width: 200px;
+            height: auto;
+        }
+
+        caption {
+            margin-top: 5px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to My CS180 Portfolio!</h1>
-    <a href="./1/index.html">Project 1</a>
+    <div class="container">
+        <div class="row">
+            <div class="image-wrapper">
+                <img src="cathedral.jpg_processed_no_sobel.jpg" alt="Cathedral Image">
+                <caption>Green offset: [2, 5] and Red offset: [3, 12]</caption>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <img src="monastery.jpg_processed_no_sobel.jpg" alt="Monastery Image">
+                <caption>Red offset: [2, 3] and Green Offset: [2, -3]</caption>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
