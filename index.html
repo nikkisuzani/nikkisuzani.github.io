@@ -59,7 +59,8 @@
     <div class="container">
         <h1> CS180 Project #1</h1>
 
-        <p> The goal of this project was to colorize the Prokudin-Gorskii images. We were given blue, green, and red images and our goal was to combine them to reproduce the color of the original image. There were also some images that were really large -- so it was necessary to implement an image pyramid to process these. In terms of my  </p>
+        <p> The goal of this project was to colorize the Prokudin-Gorskii images. We were given blue, green, and red images and our goal was to combine them to reproduce the color of the original image. There were also some images that were really large -- so it was necessary to implement an image pyramid to process these. <br> 
+        In terms of my specific approach, I started by splitting the image into the blue, red, and green ones. I first cropped the image to 85% of the original image in order to remove any black borders. Then, I had a for loop over displacements from -15 to 15 and used np.roll to check if the alignments for the red and green images matched the blue image. I then returned the alignment that had the smallest SSD between blue and each of the other images. However, for larger images this was not reasonable, as it would take a long amount of time. Thus, I created an image pyramid, reducing images down to 300 x 300, getting the offset from each image, and combining them to more quickly find an offset for the image. The emir image didn't work out very well, so I utilized Sobel filtering to improve upon it, this will be discussed more in Bells & Whistles. </p>
 
         <div class="title">Images</div>
 
@@ -77,6 +78,107 @@
                 <figure>
                     <img src="monastery.jpg_processed_no_sobel.jpg" alt="Monastery Image">
                     <figcaption>monastery.jpg, red offset: [2, 3] and green offset: [2, -3]</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <figure>
+                    <img src="tobolsk.jpg_processed_no_sobel.jpg" alt="Emir Image">
+                    <figcaption>tobolsk.jpg, red offset: [3, 6] and green offset: [2, 3]</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <figure>
+                    <img src="emir.tif_processed_no_sobel.jpg" alt="Emir Image">
+                    <figcaption>emir.tif with no sobel filtering, red offset: [-385, 154] and green offset: [24, 49]</figcaption>
+                    <img src="emir.tif.jpg_processed.jpg" alt="Emir Image with Sobel Filtering">
+                    <figcaption>emir.tif with sobel filtering, red offset: [40, 107] and green offset: [23, 49]</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <figure>
+                    <img src="church.tif_processed_no_sobel.jpg" alt="Emir Image">
+                    <figcaption>church.tif, red offset: [-4, 58] and green offset: [4, 25]</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <figure>
+                    <img src="harvesters.tif_processed_no_sobel.jpg" alt="Emir Image">
+                    <figcaption>harvesters.tif, red offset: [13, 124] and green offset: [16, 59]</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <figure>
+                    <img src="lady.tif_processed_no_sobel.jpg" alt="Emir Image">
+                    <figcaption>lady.tif, red offset: [11, 112] and green offset: [9, 49]</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <figure>
+                    <img src="melons.tif_processed_no_sobel.jpg" alt="Emir Image">
+                    <figcaption>melons.tif, red offset: [13, 179] and green offset: [10, 82]</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <figure>
+                    <img src="onion_church.tif_processed_no_sobel.jpg" alt="Emir Image">
+                    <figcaption>onion_church.tif, red offset: [36, 108] and green offset: [26, 51]</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <figure>
+                    <img src="sculpture.tif_processed_no_sobel.jpg" alt="Emir Image">
+                    <figcaption>sculpture.tif, red offset: [-27, 140] and green offset: [-11, 33]</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <figure>
+                    <img src="self_portrait.tif_processed_no_sobel.jpg" alt="Emir Image">
+                    <figcaption>self_portrait.tif, red offset: [37, 176] and green offset: [29, 78]</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <figure>
+                    <img src="three_generations.tif_processed_no_sobel.jpg" alt="Emir Image">
+                    <figcaption>three_generations.tif, red offset: [11, 112] and green offset: [14, 53]</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="image-wrapper">
+                <figure>
+                    <img src="train.tif_processed_no_sobel.jpg" alt="Emir Image">
+                    <figcaption>train.tif, red offset: [32, 87] and green offset: [5, 42]</figcaption>
                 </figure>
             </div>
         </div>
