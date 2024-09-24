@@ -137,6 +137,18 @@
             <img src="try_2.png" alt="Description of Image 3">
             <figcaption>Irregular mask second try, me taking a picture on the Stanford lawn.</figcaption>
         </figure>
+        <figure>
+            <img src="cutout.png" alt="Description of Image 3">
+            <figcaption>The irregular mask I used.</figcaption>
+        </figure>
+        <figure>
+            <img src="gaussianstacks_me.png" alt="Description of Image 3">
+            <figcaption>Gaussian stacks for the irregular mask.</figcaption>
+        </figure>
+        <figure>
+            <img src="laplacianstacks_me.png" alt="Description of Image 3">
+            <figcaption>Laplacian stacks for the irregular mask.</figcaption>
+        </figure>
         <p> Finally, I set up an irregular mask. The way I did this was take an image someone had taken of me taking a photo in Boston, and used photoshop to click on myself and set that region to white. Then, I took the image with the white in there, and did some coding to create a mask that was white where the photo was white with some additional padding using binary_dilation, and then black where the photo was not white. Then, I applied this technique again to get a picture of me taking a picture on the Stanford lawn, using another picture I had taken there. At first, I looked very much like the ghost of Christmas past, coming to haunt Stanford, so I reduced the variance of the Gaussian to make it look clearer. </p>
     </div>
 
