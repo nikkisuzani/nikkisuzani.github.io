@@ -1,26 +1,73 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Doc Embed</title>
+    <title>Image Gallery</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
         }
-        iframe {
-            width: 80%;
-            height: 80%;
-            border: none;
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        figcaption {
+            font-size: 0.9em;
+            color: #555;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        p {
+            text-align: center;
+            max-width: 600px;
+            margin: 10px auto;
         }
     </style>
 </head>
 <body>
-    <iframe src="https://docs.google.com/document/d/15vbcileDpIiuncNkTBFe6ZrFGlk0tFcFPSIq-AhFIjM/pub?embedded=true"></iframe>
+
+    <h1>Image Gallery</h1>
+
+    <div class="image-container">
+        <figure>
+            <img src="sculpture.tif_processed_no_sobel.jpg" alt="Description of Image 1">
+            <figcaption>Caption for Image 1</figcaption>
+        </figure>
+        <p>This is a paragraph describing the first image in detail. You can explain its significance, context, or anything else relevant.</p>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="three_generations.tif_processed_no_sobel.jpg" alt="Description of Image 2">
+            <figcaption>Caption for Image 2</figcaption>
+        </figure>
+        <p>This is a paragraph describing the second image. Here you can add more context or details.</p>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="tobolsk.jpg_processed_no_sobel.jpg" alt="Description of Image 3">
+            <figcaption>Caption for Image 3</figcaption>
+        </figure>
+        <p>This is a paragraph describing the third image. Feel free to elaborate on its importance or related information.</p>
+    </div>
+
+    <!-- Add more images and paragraphs as needed -->
+
 </body>
 </html>
