@@ -134,16 +134,13 @@
             <figcaption>Am I a ghost? Irregular mask try 1.</figcaption>
         </figure>
         <figure>
-            <img src="try2.png" alt="Description of Image 3">
+            <img src="try_2.png" alt="Description of Image 3">
             <figcaption>Irregular mask second try, me taking a picture on the Stanford lawn.</figcaption>
         </figure>
         <p> Finally, I set up an irregular mask. The way I did this was take an image someone had taken of me taking a photo in Boston, and used photoshop to click on myself and set that region to white. Then, I took the image with the white in there, and did some coding to create a mask that was white where the photo was white with some additional padding using binary_dilation, and then black where the photo was not white. Then, I applied this technique again to get a picture of me taking a picture on the Stanford lawn, using another picture I had taken there. At first, I looked very much like the ghost of Christmas past, coming to haunt Stanford, so I reduced the variance of the Gaussian to make it look clearer. </p>
     </div>
 
     <p> Overall, I really enjoyed this project! It was a lot of fun taking my photos and applying a lot of cool tricks to them, and I feel like I learned a lot of math and science behind why everything worked, which is always nice.</p>
-
-
-
 
 </body>
 </html>
