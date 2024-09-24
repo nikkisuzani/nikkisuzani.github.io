@@ -48,18 +48,21 @@
     <div class="image-container">
         <figure>
             <img src="sculpture.tif_processed_no_sobel.jpg" alt="Description of Image 1">
-            <figcaption>Caption for Image 1</figcaption>
+            <figcaption>D_X convolution, D_Y convolution, gradient magnitude map, and gradient magnitude map binarized with a threshold of 0.3</figcaption>
         </figure>
-        <p>This is a paragraph describing the first image in detail. You can explain its significance, context, or anything else relevant.</p>
+        <p>The project started by looking at the finite difference operators, where D_x is [1, -1] and D_y is [[1], [-1]]. The idea behind these is that we take the partial derivative of the image in order to capture the edges, since the edges will be where the derivative changes the most. Above, you can see each finite difference operator applied onto the cameraman image, where D_x captures the vertical edges and D_y captures the horizontal edges. Then, we took the gradient by taking the square root of D_x squared + D_y squared, to find all edges, and binarized it with the threshold of 0.3 so that we could boost the edges that I manually considered to be the most important and representative of the figure to 1, making them clearer in the image. Note here that the reason we take the gradient, taking the square root of D_x squared plus D_y squared is because this allows us to combine both the vertical and horizontal edges that we see to capture all the edges of the image, thus getting the entire edge map with the gradient magnitude. However, we notice that the image is still pretty noisy, and the edges are not very smooth, which leads us to the next part.</p>
     </div>
 
     <div class="image-container">
         <figure>
             <img src="three_generations.tif_processed_no_sobel.jpg" alt="Description of Image 2">
-            <figcaption>Caption for Image 2</figcaption>
+            <figcaption>DoG with two convolutions, DoG with the one convolution</figcaption>
         </figure>
-        <p>This is a paragraph describing the second image. Here you can add more context or details.</p>
-    </div>
+        <figure>
+            <img src="three_generations.tif_processed_no_sobel.jpg" alt="Description of Image 2">
+            <figcaption>DoG filters convolved with D_x, D_y</figcaption>
+        </figure>
+        <p> We noticed the last thing was kind of noisy, so another way to do this instead of using the partial derivatives is to use the derivative of Gaussian filter. First, we blur the image with a 2D gaussian, then take the partial derivatives and compute the gradient. Then, we do the same calculation a different way -- convolve the partial derivatives with the Gaussian, then convolve the image with the Gaussian in a single convolution, then compute the gradient. Both result in the same outcome, which you should be able to see by following the math of a convolution, but the second is faster since it only requires one convolution. In terms of the images, the key difference that we see is that it smooths out the edges, reducing some of the noise. It also increases the intensity, and makes them clearer to see. Above you can also see the relevant DoG filters.</p>
 
     <div class="image-container">
         <figure>
