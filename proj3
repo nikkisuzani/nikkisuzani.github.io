@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS180 Project 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: block; /* Ensures images are treated as block elements */
+            margin: 0 auto; /* Center the images */
+        }
+
+        figcaption {
+            font-size: 0.9em;
+            color: #555;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        p {
+            text-align: left; /* Left justify paragraphs */
+            max-width: 800px; /* Adjust this value to change width */
+            margin: 10px auto; /* Center the paragraph with some margin */
+        }
+    </style>
+</head>
+<body>
+
+<h1>CS180 Project 2</h1>
+
+    <p> In this project, we did more things. </p>
+
+    
+    <div class="image-container">
+        <figure>
+            <img src="gradients.png" alt="Description of Image 1">
+            <figcaption>D_X convolution, D_Y convolution, gradient magnitude map, and gradient magnitude map binarized with a threshold of 0.3</figcaption>
+        </figure>
+        <p> This image should not show up. </p>
+    </div>
+
+</body>
+</html>
