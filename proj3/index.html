@@ -43,18 +43,118 @@
 </head>
 <body>
 
-<h1>CS180 Project 2</h1>
+    <h1>CS180 Project 2</h1>
 
-    <p> In this project, we did more things. </p>
+    <p> In this project, our goal was to play around with filters and frequencies, learning more about Gaussian and Laplacian stacks, and learning how to do a lot of different cool things with images. My favorite part of the project was definitely the multiresolution blending -- it was so cool to see that code could do the kinds of things that professional graphic designers do (photoshopping and blending images together). It was a really exciting application for me! The most important thing I learned was how to set up this blending, and how to use what I knew about the different frequencies we can see far away and close up, as mentioned later, to manipulate the way that humans see images.</p>
 
-    
     <div class="image-container">
         <figure>
             <img src="gradients.png" alt="Description of Image 1">
             <figcaption>D_X convolution, D_Y convolution, gradient magnitude map, and gradient magnitude map binarized with a threshold of 0.3</figcaption>
         </figure>
-        <p> This image should not show up. </p>
+        <p>The project started by looking at the finite difference operators, where D_x is [1, -1] and D_y is [[1], [-1]]. The idea behind these is that we take the partial derivative of the image in order to capture the edges, since the edges will be where the derivative is the largest (i.e. the largest changes). Above, you can see each finite difference operator applied onto the cameraman image, where D_x captures the vertical edges and D_y captures the horizontal edges. Then, we took the gradient by taking the square root of D_x squared + D_y squared, to find all edges, and binarized it with the threshold of 0.3 so that we could boost the edges that I manually considered to be the most important and representative of the figure to 1, making them clearer in the image. Note here that the reason we take the gradient, taking the square root of D_x squared plus D_y squared is because this allows us to combine both the vertical and horizontal edges that we see to capture all the edges of the image, thus getting the entire edge map with the gradient magnitude. However, we notice that the image is still pretty noisy, and the edges are not very smooth, which leads us to the next part.</p>
     </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="dogvals.png" alt="Description of Image 2">
+            <figcaption>DoG with two convolutions, DoG with the one convolution</figcaption>
+        </figure>
+        <figure>
+            <img src="dog.png" alt="Description of Image 2">
+            <figcaption>DoG filters convolved with D_x, D_y</figcaption>
+        </figure>
+        <p> We noticed the last thing was kind of noisy, so another way to do this instead of using the partial derivatives is to use the derivative of Gaussian filter. First, we blur the image with a 2D gaussian, then take the partial derivatives and compute the gradient. Then, we do the same calculation a different way -- convolve the partial derivatives with the Gaussian, then convolve the image with the Gaussian in a single convolution, then compute the gradient. Both result in the same outcome, which you should be able to see by following the math of a convolution, but the second is faster since it only requires one convolution. In terms of the images, the key difference that we see is that it smooths out the edges, reducing some of the noise. It also increases the intensity, and makes them clearer to see. Above you can also see the relevant DoG filters.</p>
+
+    <div class="image-container">
+        <figure>
+            <img src="taj.png" alt="Description of Image 3">
+            <figcaption>Taj original and sharpened</figcaption>
+        </figure>
+        <figure>
+            <img src="roommates2.png" alt="Description of Image 3">
+            <figcaption>Roommates original and sharpened</figcaption>
+        </figure>
+        <figure>
+            <img src="roommates3.png" alt="Description of Image 3">
+            <figcaption>Roommates original, then blurred, then sharpened</figcaption>
+        </figure>
+        <p>Next, we look at image sharpening. The idea here is that we first use a Gaussian on each image to get the low frequencies of the image by convolving the Gaussian with the image. Then, we subtract that result from the original image to get the high frequencies of the image. Then, we add back the high frequencies to the original image (with some alpha) to then "sharpen" the image by showing more of these high frequencies and making it look sharper. Note that this may cause aliasing if we blur an image then sharpen it, as it's not really possible to recover the information that was lost. This can be clearly seen in the image above where the roommates image was blurred, then resharpened, and it looks different from the original image since that data has been lost during the blurring. Thus, sharpening is more like a hack, rather than a way to recover lost information, but utilizes the idea of high frequencies adding sharpness. Above is sharpening applied to a few different images to see how adding back the high frequencies makes the image seem "sharper". We were able to combine the convolving and subtracting into a single convolution, following the math in lecture that convolves instead with 1 - alpha times e - alpha times the Gaussian. I was able to use that to implement this in just one convolution. In terms of observations about the images, you can see that the lines are a lot stronger on the top of the Taj Mahal after the sharpening, and for the roommates as well, the edges especially for our faces and hair get a lot more defined. You can also see more detail on the shoes. For the blurred then sharpened image, notice how although some facial features, especially around our cheek areas seems to get sharper, these are things that didn't necessarily exist in the original image, thus it is performing aliasing. It also does not look that similar to the original image.</p>
+    </div>
+
+    <div class="image-container"></div>
+        <figure>
+            <img src="manwithcat.png" alt="Description of Image 3">
+            <figcaption>The sample image. Fourier analyses of final image, the cat, and Derek respectively.</figcaption>
+        </figure>
+        <figure>
+            <img src="pichu_fourier.png" alt="Description of Image 3">
+            <figcaption>Pikachu and pichu image. Fourier analyses of final image, pikachu, and pichu respectively.</figcaption>
+        </figure>
+        <figure>
+            <img src="all_hybrid.png" alt="Description of Image 3">
+            <figcaption> Some other hybrid images I tried. Taylor Swift and Travis Kelce, our cat Maru, and the campanile with the Space Needle. The clear failure here is the cat Maru.</figcaption>
+        </figure>
+        <p>The next thing we learned about were hybrid images. This section was kind of tough for me, because my eyes have problems and for some reason every example of hybrid image that they showed in class and the website just looked blurry and weird. The idea behind hybrid images, though, is that from far away we see low frequencies, and high frequencies when we are closer to an image. Thus, we can use this idea in similar ways that artists like Dali did, by taking two images, aligning them, and then displaying the high frequencies of one overlaid over the low frequencies of the other. The result is a hybrid image that looks like one thing from afar and another thing from close up. We can also do Fourier analysis on the hybrid images to see what the Fourier transform looks like visually, looking at each image and then the resultant combined image which has the high frequencies of one and the low frequencies of the other. Here, I thought my best images were the sample image and the pikachu/pichu so I've displayed the fourier transforms here. I've also shown some other hybrid images I tried. From left to right, these are Travis Kelce and Taylor Swift, our house cat Maru getting ready to jump and laying on my roommate's bed, and the campanile alongside the Seattle Space Needle. I think the cat one is a really strong example of a failure. I think the issue here is that the original pictures were really blurry, since the cat was in movement, which meant that trying to get the high frequencies from the blurry images caused issues when overlaid that made it really hard to see them regardless. </p>
+    </div>
+
+    <div class="image-container"></div>
+        <figure>
+            <img src="gaussian.png" alt="Description of Image 3">
+            <figcaption>Gaussian stacks of orange and apple.</figcaption>
+        </figure>
+        <figure></figure>
+            <img src="laplacian.png" alt="Description of Image 3">
+            <figcaption>LaPlacian stacks of orange and apple. Order is from lowest frequency to highest frequency, left to right.</figcaption>
+        </figure>
+        <p> Next, we looked at multiresolution blending. The way this works is first you create a 2D Gaussian which you convolve with an image repeatedly (in my case, 7 times) to get the lower and lower frequencies of an image. Then, you create a stack of these Gaussian image. From this stack, you then subtract the image with all the the frequencies minus the image with all but the highest frequency to just get the image of the highest frequencies, etc. all the way down. At the end, you keep the last image, which is the image of the lowest frequencies. Then, these resulting subtractants represent different levels of frequencies, which together are called the LaPlacian stack. Here, you can see the Gaussian and LaPlacian stacks for the orange and apple images that we were supposed to blend together. </p>
+    </div>
+
+    <div class="image-container"></div>
+        <figure>
+            <img src="mask.png" alt="Description of Image 3">
+            <figcaption>The mask, a step function.</figcaption>
+        </figure>
+        <figure>
+            <img src="oraple.png" alt="Description of Image 3">
+            <figcaption>The Oraple.</figcaption>
+        </figure>
+        <p> Then, to blend the images together, we make a mask that is half 1s and half 0s. We then apply a Gaussian the same number of times to the mask, to get a Gaussian stack for the mask as well. We take this Gaussian stack, alongside the Laplacian stacks for the orange and apple, and then apply them together such that we look at the apple on the left side and the orange on the right side, multiplying by the mask. As we increase the variance of the Gaussian, we are able to make the image smoother and smoother until we get the resulting orapple above, which looks like a cleaner blend between the two images.</p>
+    </div>
+
+    <div class="image-container"></div>
+        <figure>
+            <img src="road_home_2.png" alt="Description of Image 3">
+            <figcaption>Applying multiresolution blending to the road to my home.</figcaption>
+        </figure>
+        <p> We had some ability then to play with blending more images. The first one I did, with a regular mask, was the road to my home. I took two pictures on two different days, one cloudy and one not cloudy, in roughly the same spot. Then, I blended them together using this same process to get this resultant image of the road to my home. There are some minor issues, for example the building and car doesn't exactly align along the seam, but otherwise it looks like a pretty good representation of the road.</p>
+    </div>
+
+    <div class="image-container"></div>
+        <figure>
+            <img src="try1.png" alt="Description of Image 3">
+            <figcaption>Am I a ghost? Irregular mask try 1.</figcaption>
+        </figure>
+        <figure>
+            <img src="try_2.png" alt="Description of Image 3">
+            <figcaption>Irregular mask second try, me taking a picture on the Stanford lawn.</figcaption>
+        </figure>
+        <figure>
+            <img src="cutout.png" alt="Description of Image 3">
+            <figcaption>The irregular mask I used.</figcaption>
+        </figure>
+        <figure>
+            <img src="gaussianstacks_me.png" alt="Description of Image 3">
+            <figcaption>Gaussian stacks for the irregular mask.</figcaption>
+        </figure>
+        <figure>
+            <img src="laplacianstacks_me.png" alt="Description of Image 3">
+            <figcaption>Laplacian stacks for the irregular mask.</figcaption>
+        </figure>
+        <p> Finally, I set up an irregular mask. The way I did this was take an image someone had taken of me taking a photo in Boston, and used photoshop to click on myself and set that region to white. Then, I took the image with the white in there, and did some coding to create a mask that was white where the photo was white with some additional padding using binary_dilation, and then black where the photo was not white. Then, I applied this technique again to get a picture of me taking a picture on the Stanford lawn, using another picture I had taken there. At first, I looked very much like the ghost of Christmas past, coming to haunt Stanford, so I reduced the variance of the Gaussian to make it look clearer. </p>
+    </div>
+
+    <p> Overall, I really enjoyed this project! It was a lot of fun taking my photos and applying a lot of cool tricks to them, and I feel like I learned a lot of math and science behind why everything worked, which is always nice.</p>
 
 </body>
 </html>
