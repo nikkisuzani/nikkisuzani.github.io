@@ -1,0 +1,1 @@
+redirect main page to proj2 for now due to submission
