@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS180 Project 3</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: block; /* Ensures images are treated as block elements */
+            margin: 0 auto; /* Center the images */
+        }
+
+        figcaption {
+            font-size: 0.9em;
+            color: #555;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        p {
+            text-align: left; /* Left justify paragraphs */
+            max-width: 800px; /* Adjust this value to change width */
+            margin: 10px auto; /* Center the paragraph with some margin */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CS180 Project 4A</h1>
+
+    <p> In this project, we learned more about image homographies, and building mosaics of images together, similar to the "Panorama" camera setting. I think it was really exciting to learn more about how to stitch images together so that they look like a panorama, since I've always wondered how our phones can do that.</p>
+
+    <h2> Shoot and Digitize Pictures </h2>
+
+    <p> First, I shot pictures around campus, particularly in the CSUA, in BWW, and in my apartment. I used my iPhone 15 to take the pictures, and used Adobe to resize them. All relevant pictures are included in the images below alongside corresponding rectification/mosaic, so for ease of reading I won't include them again here. I did make sure to follow the center of projection thing mentioned in lecture, and think about taking photos through the camera's center of projection, rather than the person further back. </p>
+
+    <h2> Recovering Homographies, Warp the Images, Image Rectification </h2>
+
+    <div class="image-container">
+        <figure>
+            <img src="bair_wall.png">
+            <figcaption> Original BWW wall (left) and rectification (right) </figcaption>
+        </figure>
+        <p> I started by first computing the homography. The way I did this is by first picking four points in the image (in this case, the corners of the picture on the wall) in the Correspondence tool. Then, from lecture, we had the math of how a homography multiplies by our point to get the resulting point in the other image. I set up a system of equations from these matrices -- and then used numpy linear least squares to solve it to get the homography. From there, I computed image warping -- this was similar to project 3 except that instead of using an affine transformation, I wanted to use the homography matrix that I had defined. The way I did this was first taking the corners of the image, and applying the homography onto them (warping the corners). From there, I found the minimum and maximum X and Y, and was able to then set up a translation matrix to ensure that other points when transformed were able to be seen in the resulting image. Then, I used the computed transformation applied to the corners and corresponding height and width alongside skimage polygon to get the relevant portions of the image, apply the homography onto them in the same way as last project's affine transform, and then display the output. To prove that the warping worked, we had to then do rectification -- which meant warping the images onto a rectangle. This is where selecting the four points of the rectangle in the image came into play, then applying it to rectification. Above is the result.</p>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="zyrtec.png">
+            <figcaption> Zyrtec box (left) and rectification (right) </figcaption>
+        </figure>
+        <p> I also did another rectification, this time with a Zyrtec container in my room. </p>
+    </div>
+
+    <h2> Blend the images into a mosaic </h2>
+
+    <p> Then, finally, came the most exciting part of the project. Blending the images together! This step took a lot of conceptual understanding to do. The way that I set it up was as follows. Let's say I wanted to blend image1 and image2. First, I warped image1 onto image2, and took the resulting translation that the warp required. Then, I applied that translation onto image2. Then, I took the max of the sizes of the two images to get the size of the total blended campus. I then added those images together -- aligned due to using the same translation -- into the created canvas. Unfortunately, there would be an area of overlap between the two images which would look very strange. As a result, I used a two-band Laplacian pyramid blending mechanism to ease the blending in this overlap. To do this, I first computed the area of overlap by looking at pixels in the blended canvas that contained parts of both images. Then, for each image, I applied a 2D Gaussian convolution to get the low-frequency version. I subtracted the low frequency from the original image to get the high-frequency version. Then, I applied a distance transform for both images in that region of overlap. Using the distance transform, for the high-frequency parts of the images I chose the pixel that had the higher distance transform result (furthest from edge). For the low-frequency components, I computed a weighted average based on the corresponding distance transforms. Then, I added the low and high frequency together in the overlap region, to make the transition more smooth between the two images. Below are the outcomes.</p>
+
+    <div class="image-container">
+        <figure>
+            <img src="bair_combined_wall.png">
+            <figcaption> Both images on either side, and the blended mosaic BWW wall in the middle. </figcaption>
+        </figure>
+    </div>
+
+
+    <div class="image-container">
+        <figure>
+            <img src="csua_chair.png">
+            <figcaption> The back TV area of the CSUA. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="csua_board.png">
+            <figcaption> A whiteboard/reading area in the CSUA. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="csua_box.png">
+            <figcaption> Next to the whiteboard area, the little side table in the CSUA. Can you tell I spend a lot of time in the CSUA? </figcaption>
+        </figure>
+    </div>
+</body>
+</html>
