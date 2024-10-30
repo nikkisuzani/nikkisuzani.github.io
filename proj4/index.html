@@ -11,6 +11,13 @@
             line-height: 1.6;
         }
 
+        .side-by-side {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
         .image-container {
             display: flex;
             flex-direction: column;
@@ -89,17 +96,16 @@
     </div>
 
     <div class="image-container">
-        <figure>
-            <img src="csua_board.png">
-            <figcaption> A whiteboard/reading area in the CSUA. </figcaption>
-        </figure>
-    </div>
-
-    <div class="image-container">
-        <figure>
-            <img src="csua_box.png">
-            <figcaption> Next to the whiteboard area, the little side table in the CSUA. Can you tell I spend a lot of time in the CSUA? </figcaption>
-        </figure>
+        <div class="side-by-side">
+            <figure>
+                <img src="csua_board.png" alt="CSUA whiteboard area">
+                <figcaption>A whiteboard/reading area in the CSUA.</figcaption>
+            </figure>
+            <figure>
+                <img src="csua_box.png" alt="CSUA side table">
+                <figcaption>Next to the whiteboard area, the little side table in the CSUA. Can you tell I spend a lot of time in the CSUA?</figcaption>
+            </figure>
+        </div>
     </div>
 </body>
 </html>
