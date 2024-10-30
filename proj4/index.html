@@ -96,16 +96,37 @@
     </div>
 
     <div class="image-container">
+        <figure>
+            <img src="csua_board.png">
+            <figcaption> A whiteboard/reading area in the CSUA. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="csua_box.png">
+            <figcaption> Next to the whiteboard area, the little side table in the CSUA. Can you tell I spend a lot of time in the CSUA? </figcaption>
+        </figure>
+    </div>
+
+    <h1>CS180 Project 4B</h1>
+
+    <p> In Part B of the Project, we now follow the paper “Multi-Image Matching using Multi-Scale Oriented Patches” by Brown et al. This allows us to do automatic blending, instead of having to rely on manually clicking on points in the images and matching them up. The coolest thing I learned from this project was how to use ANMS to pick the corners that were key to the image -- oftentimes these corresponded to the corners that I had manually chosen, and sometimes they didn't, and it was cool seeing how the algorithm decides which corner to pick based on the relative strengths of pairs of coordinates. I hadn't really thought of this kind of approach before, and it was pretty cool to implement it in order to find the corners that were more evenly spaced out that provided good corners to compare across images. </p>
+
+    <h2> Harris Interest Point Detector </h2>
+
+    <!-- code for how to do side by side -->
+    <!-- <div class="image-container">
         <div class="side-by-side">
             <figure>
-                <img src="csua_board.png" alt="CSUA whiteboard area">
+                <img src="csua_board.png">
                 <figcaption>A whiteboard/reading area in the CSUA.</figcaption>
             </figure>
             <figure>
-                <img src="csua_box.png" alt="CSUA side table">
+                <img src="csua_box.png">
                 <figcaption>Next to the whiteboard area, the little side table in the CSUA. Can you tell I spend a lot of time in the CSUA?</figcaption>
             </figure>
         </div>
-    </div>
+    </div> -->
 </body>
 </html>
