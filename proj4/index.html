@@ -58,14 +58,23 @@
 
     <p> First, I shot pictures around campus, particularly in the CSUA, in BWW, and in my apartment. I used my iPhone 15 to take the pictures, and used Adobe to resize them. All relevant pictures are included in the images below alongside corresponding rectification/mosaic, so for ease of reading I won't include them again here. I did make sure to follow the center of projection thing mentioned in lecture, and think about taking photos through the camera's center of projection, rather than the person further back. </p>
 
-    <h2> Recovering Homographies, Warp the Images, Image Rectification </h2>
+    <h2> Recovering Homographies </h2>
+
+    <p> I started by first computing the homography. The way I did this is by first picking points in the image (in this case, the corners of the picture on the wall) in the Correspondence tool. Then, from lecture, we had the math of how a homography multiplies by our point to get the resulting point in the other image. I set up a system of equations to solve A = HB where A is the original image points and B is the new image corresponding points -- and then used numpy linear least squares to solve it to get the homography. </p>
+
+    <h2> Warp the Images </h2>
+
+    <p> From there, I computed image warping -- this was similar to project 3 except that instead of using an affine transformation, I wanted to use the homography matrix that I had defined. The way I did this was first taking the corners of the image, and applying the homography onto them (warping the corners). From there, I found the minimum and maximum X and Y, and was able to then set up a translation matrix to ensure that other points when transformed were able to be seen in the resulting image. Then, I used the computed transformation applied to the corners and corresponding height and width alongside skimage polygon to get the relevant portions of the image, apply the homography onto them in the same way as last project's affine transform, and then display the output. </p>
+
+    <h2> Image Rectification </h2>
+
+    <p> To prove that the warping worked, we had to then do rectification -- which meant warping the images onto a rectangle. This is where selecting the four points of the rectangle in the image came into play, then applying it to rectification. So basically, I selected four points on my image that were a rectangle, then compared to 4 points on a rectangle that I manually entered as pixel values. I then warped the image onto the rectangle, to get a clear rectification. I did this for two images, and below are the results.</p>
 
     <div class="image-container">
         <figure>
             <img src="bair_wall.png">
             <figcaption> Original BWW wall (left) and rectification (right) </figcaption>
         </figure>
-        <p> I started by first computing the homography. The way I did this is by first picking points in the image (in this case, the corners of the picture on the wall) in the Correspondence tool. Then, from lecture, we had the math of how a homography multiplies by our point to get the resulting point in the other image. I set up a system of equations to solve A = HB where A is the original image points and B is the new image corresponding points -- and then used numpy linear least squares to solve it to get the homography. From there, I computed image warping -- this was similar to project 3 except that instead of using an affine transformation, I wanted to use the homography matrix that I had defined. The way I did this was first taking the corners of the image, and applying the homography onto them (warping the corners). From there, I found the minimum and maximum X and Y, and was able to then set up a translation matrix to ensure that other points when transformed were able to be seen in the resulting image. Then, I used the computed transformation applied to the corners and corresponding height and width alongside skimage polygon to get the relevant portions of the image, apply the homography onto them in the same way as last project's affine transform, and then display the output. To prove that the warping worked, we had to then do rectification -- which meant warping the images onto a rectangle. This is where selecting the four points of the rectangle in the image came into play, then applying it to rectification. Above is the result.</p>
     </div>
 
     <div class="image-container">
@@ -73,7 +82,6 @@
             <img src="zyrtec.png">
             <figcaption> Zyrtec box (left) and rectification (right) </figcaption>
         </figure>
-        <p> I also did another rectification, this time with a Zyrtec container in my room. </p>
     </div>
 
     <h2> Blend the images into a mosaic </h2>
