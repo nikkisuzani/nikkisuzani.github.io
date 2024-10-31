@@ -115,13 +115,73 @@
 
     <h2> Detecting Corner Features in an Image </h2>
 
+    <p> We start on the work to detect the corner features in the image. We use the Harris Corner code provided to generate Harris corners and display them on the BWW image like so. </p>
+
+    <div class="image-container">
+        <div class="side-by-side">
+            <figure>
+                <img src="harriscorners1.png">
+                <figcaption>The Harris Corners on the left BWW image.</figcaption>
+            </figure>
+            <figure>
+                <img src="bair_wall_auto.png">
+                <figcaption>The Harris Corners on the right BWW image.</figcaption>
+            </figure>
+        </div>
+    </div>
+
+    <p> Then, we use the ANMS algorithm. This algorithm allows us to condense down the number of corner points we look at. Basically, we take the distance between every pair of points using the provided dist2 function. Then, we compute for each point, the suppression radius, and keep only the points that are the maximum in the neighborhoods of a certain radius. We sort the points to look at the maximums, then return the 100 largest maximums, which then becomes our new set of corners that we use for feature extraction and matching. Here, we use a c_robust value of 0.9 and return the top 500 interest points, as shown in the paper. Choosing points that are spatially further apart on the image, which this algorithm causes, then mean that it's more likely that we will be able to do feature matching with the pairs of points and they won't be dropped, as explained in the paper. </p>
+
+    <div class="image-container">
+        <div class="side-by-side">
+            <figure>
+                <img src="bair_amns.png">
+                <figcaption>The AMNS Corners on the left BWW image.</figcaption>
+            </figure>
+            <figure>
+                <img src="bair_amns_2.png">
+                <figcaption>The AMNS Corners on the right BWW image.</figcaption>
+            </figure>
+        </div>
+    </div>
+
     <h2> Extracting a Feature Descriptor for each Feature Point </h2>
+
+    <p> Now, for each corner, we take the 40x40 region around the point, resize it to 8x8, and standardize it (subtracting the mean and dividing by the standard deviation). Then, we flatten each feature and append them all together. This gets back the extracted feature descriptors from each corner. Below are some examples of what the first six feature descriptors look like.  </p>
+
+    <div class="image-container">
+        <div class="side-by-side">
+            <figure>
+                <img src="bair_feat1.png">
+                <figcaption>Six features on the left BWW image.</figcaption>
+            </figure>
+            <figure>
+                <img src="bair_feat2.png">
+                <figcaption>Six features on the right BWW image.</figcaption>
+            </figure>
+        </div>
+    </div>
 
     <h2> Matching these Feature Descriptors between Two Images </h2>
 
+    <p> Using these feature descriptors on both images, we then implement feature matching, as described in the paper. The way that we do feature matching is by looking at the SSD between all pairs of feature descriptors from image 1 and image 2. Then, we compare the 1-NN and 2-NN distances between each pair of features. If the 1-NN distance divided by the 2-NN distance is less than a Lowe's threshold of 0.4 -- which I got from the graph in the paper -- then we consider this to be a match between images. The reason this works is because Lowe's assumes the 1-NN is a potential correct match, and 2-NN is potentially incorrect (the outlier distance) and can use the ratio to describe how likely it is for this to be a correct match. For the two images that we are visualizing here, these are the points that we get from feature matching -- ie the corners that match across features. You can look at them from left to right to see where the correspondences line up, and they seem relatively correct.  </p>
+
+    <div class="image-container">
+        <figure>
+            <img src="bair_features_matched.png">
+            <figcaption> The points left after doing features matching on the images. These look generally correct (ie look at the points on the edges of the faces) but there are some that seem incorrect, for example points on the walls.</figcaption>
+        </figure>
+    </div>
+    
     <h2> Use RANSAC to Compute a Homography </h2>
 
+    <p> Next, we use the RANSAC algorithm. We take the pairs of matched points that we got from the previous steps. Then, we randomly select four pairs of points. For those automatically chosen points, we compute a homography using the same logic as Proj4A, and transform the images. Then, we look at the result. If the SSD distance between the transformed feature points and the target feature points is less than a threshold, which I chosen through some parameter tuning to be 1, then we keep those feature points. If the number of feature points that are "close enough" between the transformed image and the target image is greater than the number of points kept from the previous best random selection, then we use the homography matrix generated by those points for the image. We keep going and run this 100 times, and then output the best homography. There's no images to see here, since this is then directly applied to the next part. </p>
+
     <h2> Produce a Mosaic </h2>
+
+    <p> Finally, we use the RANSAC algorithm to produce a Mosaic. The way that we do this is we first get the homography that we want to use from RANSAC. Then, we use that homography to warp the Image (like in Proj4A) and create the blended mosaic from that warped image -- as exactly described in Proj4A. The only difference here is that we used automatically generated points rather than manually selected ones. Then, we output our blended mosaics from Proj4B methods, side by side with the blended mosaics from Proj4A methods that were manually selected.</p>
+
+    <p> From the set of images that we see, there are some kind of cool observations to make here. First, we notice that for the CSUA board image, looking at the whiteboard area, the blended image that comes out of Proj4B using the automatically detected corners is actually better than the one in Project 4A, since the side of the whiteboard appears less blurry and is more clear. The reason for this is because when we go back and look at the feature matching output of the image, we see that there were points selected that were on the whiteboard side, which then allowed the whiteboard to become more clearly aligned, whereas when I was manually selecting I only selected points on the left side, which caused the output to be a little more blurry. The algorithm was able to more clearly detect good alignment points here than me. However, this is not necessarily true for the other images. For example, for the box, the image with manually selected points looks better than the image with automatically selected points, since I was able to select better corner points on the actual box to allow the box to align, whereas it becomes very blurry in the image output from my methods in Project 4B. Ultimately, I think that manually selecting points, when you have the time and effort to put into selecting many different points, is going to be better than automatically detecting, but automatic detection is a quicker solution when you have less time, and can sometimes select some correspondences that you might miss if you're rushing. </p>
 
     <div class="image-container">
         <div class="side-by-side">
@@ -130,12 +190,12 @@
                 <figcaption>The BWW wall with manually selected points.</figcaption>
             </figure>
             <figure>
-                <img src="bair_wall_auto.png">
+                <img src="bww_auto.png">
                 <figcaption>The BWW wall with automatically selected points.</figcaption>
             </figure>
         </div>
     </div>
-    
+
     <div class="image-container">
         <div class="side-by-side">
             <figure>
@@ -143,7 +203,7 @@
                 <figcaption>The CSUA whiteboard with manually selected points.</figcaption>
             </figure>
             <figure>
-                <img src="csua_board_auto.png">
+                <img src="board_auto.png">
                 <figcaption>The CSUA whiteboard with automatically selected points.</figcaption>
             </figure>
         </div>
@@ -156,7 +216,7 @@
                 <figcaption>The CSUA box with manually selected points.</figcaption>
             </figure>
             <figure>
-                <img src="csua_box_auto.png">
+                <img src="box_auto.png">
                 <figcaption>The CSUA box with automatically selected points.</figcaption>
             </figure>
         </div>
@@ -169,7 +229,7 @@
                 <figcaption>The CSUA back TV area with manually selected points.</figcaption>
             </figure>
             <figure>
-                <img src="csua_chair_auto.png">
+                <img src="chair_auto.png">
                 <figcaption>The CSUA back TV area with automatically selected points.</figcaption>
             </figure>
         </div>
