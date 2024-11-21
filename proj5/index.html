@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS180 Project 4</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+
+        .side-by-side {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: block; /* Ensures images are treated as block elements */
+            margin: 0 auto; /* Center the images */
+        }
+
+        figcaption {
+            font-size: 0.9em;
+            color: #555;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        p {
+            text-align: left; /* Left justify paragraphs */
+            max-width: 800px; /* Adjust this value to change width */
+            margin: 10px auto; /* Center the paragraph with some margin */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CS180 Project 5A</h1>
+
+    <h2> Downloading Precomputed Text Embeddings </h2>
+
+    <div class="image-container">
+        <div class="side-by-side">
+            <figure>
+                <img src="20_inf.png">
+                <figcaption>20 inference steps.</figcaption>
+            </figure>
+            <figure>
+                <img src="5_inf.png">
+                <figcaption> 5 inference steps. </figcaption>
+            </figure>
+        </div>
+    </div>
+
+    <p> We started by looking at some precomputed text embeddings and sample images that were generated. The three captions given were "an oil painting of a snowy mountain village", "a man wearing a hat", "a rocket ship". The first three have 20 inference steps and the next three have 5 inference steps. For the 20 inference steps, all the images do seem to basically exactly match the text prompts and the quality seems pretty good, except that the colors are pretty off; like the rocket ship seems more of a caricature rather than an actual depiction of a rocket ship. For the five inference steps the quality got a lot worse, especially again with the rocket ship which is now kind of broken apart into pieces with some strange things on top of it. I think this just supports the hypothesis that at least at the beginning, more inference steps can improve quality of outputs. The random seed I am using is 2988.</p>
+
+    <h2> Implementing the Forward Process </h2>
+
+    <div class="image-container">
+        <figure>
+            <img src="noise_levels.png">
+            <figcaption> The original image, noisy image at t = 250, noisy image at t = 500, noisy image at t = 750 </figcaption>
+        </figure>
+    </div>
+
+    <p> For the forward process, I exactly followed the two equations given where you compute a noisy image x_t by sampling from a Gaussian that is constructed according to alpha-bar-t and random noise epsilon, specifically equation A.2. from the project spec. This resulted in the following test image at noise levels [250, 500, 750]; as you can clearly see as the noise level increases, the image gets more and more noisy since we inject more random noise. </p>
+
+    <h2> Classical Denoising </h2>
+
+    <div class="image-container">
+        <figure>
+            <img src="denoised.png">
+            <figcaption> The noisy image followed by the Gaussian blurred noisy image with a 5x5 kernel at t = 250, t = 500, t = 750. The results are not great, and especially at t = 750 not much of the original image really appears to be reconstructed. </figcaption>
+        </figure>
+    </div>
+
+    <p> Next I tried to use the denoising tactics that we have used in previous projects, which is applying a Gaussian blur to the image with torchvision.transforms.functional.gaussian_blur to try to remove the noise. For this I used a 5x5 kernel. Above are the noisy images and corresponding Gaussian-denoised versions. This did not do so well, so it felt necessary to try another method of denoising. </p>
+
+    <h2> One-Step Denoising </h2>
+
+    <div class="image-container">
+        <figure>
+            <img src="one-step.png">
+            <figcaption> Noisy images and one-step denoising. Note that the outputs at later steps have less noise around them, but don't necessarily look that much like the original image, for example the shapes and colors of the building is a little off. </figcaption>
+        </figure>
+    </div>
+
+    <p> Now, we do one-step denoising. For this piece I used a UNet conditioned on the amount of Gaussian noise to first estimate the noise, then remove that noise to get an estimate of the original image. Note that when removing the noise, I had to reverse the process by which the noise was applied, dealing with the alpha-bar-t scalars and doing the "backwards" of what we do to add the noise by taking im_noisy - sqrt(1 - alpha-bar-t) * noise_est / sqrt(alpha-bar-t). This then got images that looked slightly better than Gaussian blur, but still not amazing, as described in the caption above. Thus, we turn to iterative denoising.</p>
+
+    <h2> Iterative Denoising </h2>
+
+    <div class="image-container">
+        <figure>
+            <img src="iterative.png">
+            <figcaption> The image through iterative denoising, showing the result every 5 timesteps and at the end the very final result of the iterative denoising. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="compare_iterative.png">
+            <figcaption> The image through that we did the iterative denoising on, but with one-step denoising (on the left) and Gaussian blur (on the right). We see that iterative denoising clearly does a lot better. </figcaption>
+        </figure>
+    </div>
+
+    <p> Now, we do iterative denoising following equations 6 and 7 of the DDPM paper. The key idea here is that we keep improving the image and denoising over multiple time steps, each time getting a noise estimate and removing it, so we are able to better estimate the total noise over time sort of thinking of it like the sum of these noise estimates. This iterative denoising result is displayed above, as you see over each 5 timesteps (since we displayed a result every 5 timesteps), the image gets better and better as more and more noise is removed. We can contrast these results to the second set of images above, which is the same image with one-step denoising and Gaussian blur, to see iterative denoising does better. </p>
+
+    <h2> Diffusion Model Sampling </h2>
+
+    <div class="image-container">
+        <figure>
+            <img src="diffusion_generated.png">
+            <figcaption> The five generated images using iterative_denoise on pure noise. </figcaption>
+        </figure>
+    </div>
+
+    <p> Next we do Diffusion Model Sampling. Here, we use the iterative_denoise function with i_start = 0 and passing in completely random noise in order to generate an image from scratch, denoising a completely random image (pure noise) to then generate an image that wasn't already there. Above are our five generated images using the iterative_denoise function to denoise pure noise. <p>
+
+    <h2> Classifier Free Guidance </h2>
+
+    <div class="image-container">
+        <figure>
+            <img src="cfg.png">
+            <figcaption> The five images generated using CFG with gamma = 7. Notice that these are much higher quality than the previous images generated. </figcaption>
+        </figure>
+    </div>
+
+    <p> Next we want to improve upon these generated images a little so we do Classifier-Free Guidance (CFG). This computes a conditional and unconditional noise estimate and then lets the new noise estimate be equal to the unconditional estimate + gamma * (conditional noise estimate - unconditional noise estimate). For the unconditional noise estimate, we just use an empty prompt embedding whereas for the conditional we use the "a high quality photo" embedding. The gamma parameter controls how much of the unconditional/conditional estimate you use, and utilizing a gamma of 7, we notice that when gamma > 1 you actually get a lot of higher quality images. You can see these images above. </p>
+
+    <h2> Image to Image Translation </h2> 
+    <div class="image-container">
+        <figure>
+            <img src="im2im1.png">
+            <figcaption> Image to image translation with the campanile image using starting index [1, 3, 5, 7, 10, 20]. As you can see as the starting index increases, the less "edits" we do and the closer to the actual campanile image we get. </figcaption>
+        </figure>
+    </div>
+
+    <p> Next we do image to image translation. We take an original image, add some noise, and then use the SDEdit algorithm to get back a new image using the text prompt "a high quality photo". This should return an image similar to the test image, as long as the noise is low enough. We do this by running forward to get a noisy test image, then run iterative_denoise_cfg with different starting indexes to see the "edits" to the image, the less the starting index, the closer to the original image that the image generated is. </p>
+
+    <h1>CS180 Project 5B</h1>
+
+</body>
+</html>
