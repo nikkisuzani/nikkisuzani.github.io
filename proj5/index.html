@@ -307,13 +307,6 @@
 
     <div class="image-container">
         <figure>
-            <img src="doghat2.png">
-            <figcaption> A man from close up and a dog from far away. </figcaption>
-        </figure>
-    </div>
-
-    <div class="image-container">
-        <figure>
             <img src="rocketpencil2.png">
             <figcaption> A rocket from close up and a pencil from far away. </figcaption>
         </figure>
@@ -322,7 +315,158 @@
     <p> Finally, we implement hybrid images like in Project 2. For these images, we first apply UNet to the image with two different text prompts. Then, we take the low pass of the noise estimate for the first and the high pass of the noise estimate for the second, and that creates our new noise estimate that we use for the diffusion. This should retain an image that looks like the low passed thing from close up and the high passed thing from far away. The logic here is the same as the logic behind low/high frequencies in project 2. You can see this in the above images. </p>
     <h1>CS180 Project 5B</h1>
 
-    <p> Next, we move to project 5b, which is implementing an actual UNet diffusion model. </p>
+    <h2> Implementing the UNet and Using the UNet to train a Denoiser </h2>
 
+    <p> Next, we move to project 5b, which is implementing an actual UNet model. Here, we implement UNet. UNet has many steps and the infrastructure is described well in the project spec. The basic idea is that it does a few different convolutions and upsampling and downsampling, concatenating different layers together, to build the UNet model. In this case, we want to optimize our model for L2 loss, aka the MSE, and we would train it by first generating an image from the dataset, adding some amount of noise to it (scaling pure noise with some sigma) and then optimizing over the L2 Loss between our denoised prediction and x. To start, we start by applying noising to some images of the dataset, using different sigmas of 0, 0.2, 0.4, 0.5, 0.6, 0.8, 1, which you can see below. </p>
+
+    <div class="image-container">
+        <figure>
+            <img src="noised_nums.png">
+            <figcaption> Five of the images from the training set denoised at the different levels. sigma = [0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0] </figcaption>
+        </figure>
+    </div>
+
+    <h2> Training the Simple Model </h2>
+
+    <p> Next, we do training where we apply noise with a sigma of 0.5 to images from the training set, shuffling the training data set and using batch size 256 for 5 epochs. We then optimize over the L2 loss between our prediction and the original image, and use an Adam optimizer with learning rate 1e-4. This results in the following training curve over each step. You can also see the results after the 1st and 5th epoch below. They are okay, but still a bit blurry. </p>
+    
+    <div class="image-container">
+        <figure>
+            <img src="training_loss.png">
+            <figcaption> The training loss for the simple UNet with no conditioning with parameters mentioned above. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="epoch_0_res.png">
+            <figcaption> The results after the first epoch of the images. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="epoch_4_res.png">
+            <figcaption> The results after the fifth epoch of the images. </figcaption>
+        </figure>
+    </div>
+
+    <h2> Out of distribution testing </h2>
+
+    <p> Now, we want to see how this does out of distribution, aka tested on images where it has not seen the true results. We try this with many different sigmas (levels of noise) applied, as you can see below. It does worse and worse as the noise gets away from 0.5 which it is trained on, which makes sense, since it is under new conditions, and also as there is more noise it is going to do worse since there is more to denoise.</p>
+
+    <div class="image-container">
+        <figure>
+            <img src="0.png">
+            <figcaption> Denoised on sigma = 0.0. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="0.2.png">
+            <figcaption> Denoised on sigma = 0.2. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="0.4.png">
+            <figcaption> Denoised on sigma = 0.4. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="0.5.png">
+            <figcaption> Denoised on sigma = 0.5. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="0.6.png">
+            <figcaption> Denoised on sigma = 0.6. </figcaption>
+        </figure> 
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="0.8.png">
+            <figcaption> Denoised on sigma = 0.8. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="1.0.png">
+            <figcaption> Denoised on sigma = 1.0. </figcaption>
+        </figure>
+    </div>
+
+    <h2> Training a Diffusion Model </h2>
+
+    <p> Now, we're going to iteratively denoise images using the UNet model, doing a diffusion model. The equations that we use here come from DDPM, and are the same as many of the equations from part a. We start by generating a pure noise image. Then, we predict the added noise epsilon to that image, and subtract it out. We do this iteratively, now using the new image over and over again, until we can generate our more realistic image. Now, in order for this to work well, we need to condition the UNet on the timestep that it is currently at, since the variance of x_t changes with t. </p>
+
+    <h2> Adding Time Conditioning to UNet and training the UNet </h2>
+
+    <p> To add time conditioning, we take our previous UNet infrastructure and add two additional FCBlocks that allow us to embed time information into our model. We normalize t to be in the range [0, 1], passing in t/300.  Then, to train, we pick a random image from the training set, get a random t, and predict the noise in x_t. We do this for many different images at many different timesteps so that our model can deal with multiple timesteps. This time, instead of 5 epochs, we do this for 20 epochs and use an exponential learning rate decay scheduler for our Adam optimizer. Below is our training curve for the time-conditioned UNet. </p>
+
+    <div class="image-container">
+        <figure>
+            <img src="time_train_loss.png">
+            <figcaption> The training loss of our time-conditioned UNet with parameters mentioned above. </figcaption>
+        </figure>
+    </div>
+
+    <h2> Sampling from the UNet </h2>
+
+    <p> Then, we sample from the UNet using a very similar model to part A where we take our pure noise and then go back each time step, iteratively denoising until we get the sampled values. The more epochs the model trains, the better this does. As you can see below, these are the sampled outputs after 5 epochs and 20 epochs.</p>
+
+    <div class="image-container">
+        <figure>
+            <img src="five_epochs.png">
+            <figcaption> The samples from time conditioned UNet after five epochs. They look okay, but some are pretty strange, for example the bottom left. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="20_epochs.png">
+            <figcaption> The samples from time conditioned UNet after twenty epochs. These look a lot better, but there's definitely still room for improvement. </figcaption>
+        </figure>
+    </div>
+
+    <h2> Adding Class Conditioning to the UNet </h2>
+
+    <p> Now, we want to condition our UNet on the class 0-9, since we know 0s tend to look more like 0s than others, etc. and we can encode that additional information into our model to make it better. We make a one-hot-encoded vector that is 1 for the given class and 0 for the other classes, and utilize this alongside a mask (that is all 0s with probability 10%, to allow us to have 10% dropout and all 1s the rest of the time) to make our model. The purpose for this dropout is so that if we don't condition by the class, our UNet still works. The process is very similar to time conditioning except that we have c and 10% of the time we do unconditional generation. The resulting training curve is below. </p>
+
+    <div class="image-container">
+        <figure>
+            <img src="class_conditioned_training.png">
+            <figcaption> The class conditioned training curve. </figcaption>
+        </figure>
+    </div>
+
+    <h2> Sampling from the Class Conditioned UNet </h2>
+
+    <div class="image-container">
+        <figure>
+            <img src="epoch_5_class.png">
+            <figcaption> Class conditioned sampling of 4 of each number after 5 epochs. </figcaption>
+        </figure>
+    </div>
+
+    <div class="image-container">
+        <figure>
+            <img src="epoch_20_class.png">
+            <figcaption> Class conditioned sampling of 4 of each number after 20 epochs. </figcaption>
+        </figure>
+    </div>
+
+
+    <p> Now, we want to sample from the class conditioned UNet in the same way as before, but now we also need to say the specific classes that we want to sample. I sampled 4 0s, 4 1s, 4 2s, etc. in order to see 4 of each image sampled. You'll notice that the class conditioning did pretty good, since the outputted image always matched the class that was conditioned on even after only 5 epochs of training. The results look a lot better than even time conditioned, and you can see them above.</p>
+
+    <p> Now we're done! We've implemented a class and time conditioned UNet and learned a lot about diffusion models and image generation. Very cool project, thanks for assigning this one! </p>
 </body>
 </html>
