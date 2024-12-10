@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS180 Final Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .image-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .image-row img {
+            max-width: 30%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: block; 
+            margin: 0 auto; 
+        }
+
+        figcaption {
+            font-size: 0.9em;
+            color: #555;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        p {
+            text-align: left; 
+            max-width: 800px; 
+            margin: 10px auto; 
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 40px;
+        }
+
+        h3 {
+            color: #555;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CS180 Final Project</h1>
+
+    <h2>Light Field Camera</h2>
+
+        <h3>Depth Refocusing</h3>
+        <p>Placeholder text.</p>
+
+        <div class="image-container">
+            <figure>
+                <img src="output.gif" alt="Depth Refocusing Output">
+                <figcaption>Description for output.gif.</figcaption>
+            </figure>
+        </div>
+
+        <div class="image-container">
+            <figure>
+                <img src="flower_output.gif" alt="Depth Refocusing Flower Output">
+                <figcaption>Description for flower_output.gif.</figcaption>
+            </figure>
+        </div>
+
+        <!-- Aperture Adjustment Subsection -->
+        <h3>Aperture Adjustment</h3>
+        <p>Placeholder text.</p>
+
+        <div class="image-container">
+            <figure>
+                <img src="aperture_output.gif" alt="Aperture Adjustment Output">
+                <figcaption>Description for aperture_output.gif.</figcaption>
+            </figure>
+        </div>
+
+        <div class="image-container">
+            <figure>
+                <img src="flower_aperture_output.gif" alt="Aperture Adjustment Flower Output">
+                <figcaption>Description for flower_aperture_output.gif.</figcaption>
+            </figure>
+        </div>
+
+    <!-- Gradient Domain Fusion Section -->
+    <h2>Gradient Domain Fusion</h2>
+
+        <!-- Toy Problem Subsection -->
+        <h3>Toy Problem</h3>
+        <p>[Placeholder text for Toy Problem]</p>
+
+        <div class="image-container">
+            <figure>
+                <img src="toy_constr.png" alt="Toy Problem Construction">
+                <figcaption>Description for toy_constr.png.</figcaption>
+            </figure>
+        </div>
+
+        <!-- Poisson Blending Subsection -->
+        <h3>Poisson Blending</h3>
+        <p>[Placeholder text for Poisson Blending]</p>
+
+        <div class="image-row">
+            <figure>
+                <img src="original_image.png" alt="Original Image">
+                <figcaption>Original Image</figcaption>
+            </figure>
+            <figure>
+                <img src="original_penguin.png" alt="Original Penguin">
+                <figcaption>Original Penguin</figcaption>
+            </figure>
+            <figure>
+                <img src="original_blended.png" alt="Original Blended">
+                <figcaption>Original Blended</figcaption>
+            </figure>
+        </div>
+
+        <div class="image-container">
+            <figure>
+                <img src="poisson_blended.png" alt="Poisson Blended Output">
+                <figcaption>Description for poisson_blended.png.</figcaption>
+            </figure>
+        </div>
+
+        <div class="image-container">
+            <figure>
+                <img src="second_penguin_poisson.png" alt="Second Penguin Poisson">
+                <figcaption>Description for second_penguin_poisson.png.</figcaption>
+            </figure>
+        </div>
+
+        <div class="image-container">
+            <figure>
+                <img src="third_penguin_poisson.png" alt="Third Penguin Poisson">
+                <figcaption>Description for third_penguin_poisson.png.</figcaption>
+            </figure>
+        </div>
+
+        <!-- Bells & Whistles: Mixed Gradients Subsection -->
+        <h3>Bells &amp; Whistles: Mixed Gradients</h3>
+        <p>[Placeholder text for Bells &amp; Whistles: Mixed Gradients]</p>
+
+        <div class="image-row">
+            <figure>
+                <img src="cal_poisson.png" alt="Cal Poisson">
+                <img src="cal_mixed.png" alt="Cal Mixed">
+                <figcaption>Comparison of Poisson and Mixed Gradients for Cal.</figcaption>
+            </figure>
+        </div>
+
+        <div class="image-row">
+            <figure>
+                <img src="maru_mixed.png" alt="Maru Mixed">
+                <img src="maru_poisson.png" alt="Maru Poisson">
+                <figcaption>Comparison of Poisson and Mixed Gradients for Maru.</figcaption>
+            </figure>
+        </div>
+
+</body>
+</html>
