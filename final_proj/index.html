@@ -78,58 +78,114 @@
     <h1>CS180 Final Project</h1>
 
     <h2>Light Field Camera</h2>
+        <p> The first precanned project I did was light field. I think what I learned the most from this project was understanding kind of real-world applications of what we saw in class. For example, we learned in lecture that as aperture increases, since more light can come in, things get more blurry. And here, we we were able to actually implement that and see how using different images and rays of light we can simulate aperture, depth focus, etc. I thought that kind of real-world application was very exciting.</p>
 
         <h3>Depth Refocusing</h3>
-        <p>Placeholder text.</p>
+        <p>The first part of the project was depth refocusing. Here, we took images from the Stanford Light Field Archive. There were 289 images of a chessboard from different (x, y) positions and 289 images of the same flower from different (x, y) positions. In order to do depth refocusing, the first thing you do is you preprocess the images, so for each image you get the corresponding (x, y). Then, you take the difference for the x and y coordinates from the center, which is at (17 // 2, 17 // 2) aka (8, 8). Then, you use scipy shift to shift the images by c * (x - 8) and -1 * c * (y - 8) respectively. Here, c represents the depth, so as c changes, that changes what depth we are looking at. After doing these shifts for all images in the dataset, we then take the normalized average of the stack of images. Below, you can see the effects of changing c from 0 to 3 with step size 0.2 for chessboard, and 0 to 2 with step size 0.2 for flower. You should be able to see clearly how this simulates different depth refocusing on different parts of the image.</p>
 
         <div class="image-container">
             <figure>
                 <img src="output.gif" alt="Output GIF">
-                <figcaption>Description for output.gif.</figcaption>
+                <figcaption>C = 0 to 3 with step size 0.2 for the chessboard.</figcaption>
             </figure>
         </div>
 
         <div class="image-container">
             <figure>
                 <img src="flower_output.gif" alt="Flower Output GIF">
-                <figcaption>Description for flower_output.gif.</figcaption>
+                <figcaption>C = 0 to 2 with step size 0.2 for the flower.</figcaption>
             </figure>
         </div>
 
         <h3>Aperture Adjustment</h3>
-        <p>Placeholder text.</p>
+        <p>Next, we do aperture adjustment. This is very similar to the previous code, except the idea of aperture is that you skip images that are more than aperture distance away from the center. This allows you to control the area that is focused, simulating increasing/decreasing aperture to affect where is blurry or not. To code this, you just check if the absolute difference between x and 8 and y and 8 is more than aperture, and if it is you don't include that image in the normalized average. Below, you can see aperture results for the chessboard from aperture 0 to 10 with step size of 1, and aperture for the flower from 0 to 5 with step size 1. I chose to use c = 1.5 here since it gave the most clear results. Notice that the wider the aperture the more "blurred" the image is, as is in real life.</p>
 
         <div class="image-container">
             <figure>
                 <img src="aperture_output.gif" alt="Aperture Output GIF">
-                <figcaption>Description for aperture_output.gif.</figcaption>
+                <figcaption>Aperture 0 to 10 with step size 1 for chessboard.</figcaption>
             </figure>
         </div>
 
         <div class="image-container">
             <figure>
                 <img src="flower_aperture_output.gif" alt="Flower Aperture Output GIF">
-                <figcaption>Description for flower_aperture_output.gif.</figcaption>
+                <figcaption>Aperture 0 to 5 with step size 1 for flower.</figcaption>
             </figure>
         </div>
 
+        <p> And that's it! Now we've learned about light fields and simulating them. What I learned is in the intro paragraph, but I just wanted to also comment that I did really enjoy this project, and thought the output gifs were super cool.</p>
+
     <h2>Gradient Domain Fusion</h2>
+        <p> Now, we're doing the project on gradient domain fusion. For this project, I used https://courses.grainger.illinois.edu/cs445/fa2023/projects/gradient/ComputationalPhotography_ProjectGradient.html for the starter code in Python. This project was about understanding Gradient Domain processing and specifically implementing Poisson Blending, to blend an object from a source to a target image, and get rid of "seams" in that blending.</p>
 
         <h3>Toy Problem</h3>
-        <p>[Placeholder text for Toy Problem]</p>
+        <p>The first part of the project was a toy problem. Here, for each pixel we are given two objectives: minimize (v(x+1,y)-v(x,y) - (s(x+1,y)-s(x,y)))^2 and minimize minimize (v(x,y+1)-v(x,y) - (s(x,y+1)-s(x,y)))^2 and finally minimize (v(0,0)-s(0,0))^2 where s(x, y) is the intensity at the source image and v(x,y) is the value such that Av = b. I followed the guide on how to implement this in the spec, but the basic idea was to set up each of the constraints in a sparse matrix A and the known vector b, and then use least squares to solve. I got the following result, with a max error printed of 0.001. Note that the v parameters get you the reconstructed image.</p>
 
         <div class="image-container">
             <figure>
                 <img src="toy_constr.png" alt="Toy Problem Construction" class="small-image">
-                <figcaption>Description for toy_constr.png.</figcaption>
+                <figcaption>The toy problem, as you can see I successfully reconstructed the initial image. It is a little grainy, but the original image was also a little grainy since it was small and has just been blown up a little to be viewed. However, the image is clearly reconstructed from its gradient.</figcaption>
             </figure>
         </div>
 
         <h3>Poisson Blending</h3>
-        <p>[Placeholder text for Poisson Blending]</p>
+        <p>Next, we do Poisson blending. Here, we want to do the same thing as above, but focus on the pixels inside of the mask. In particular, you start by taking your source image and crop it, then pick a mask region in the target image that you want to put your source image into. I was not able to use the interactive drawing tool in Jupyterhub, so this was done for me by manually tinkering with x and y values until it looked reasonable for what I wanted, and using the utils crop_image function to crop the image. Then, the goal is to solve the blending constraints which takes the min of two terms. The first term is for each pixel i in the source image, and for each of its neighbors j in the source image, take the difference of the value parameters of i and j minus the difference of the intensity in the source image of i and j and square that. Then, the second term is for every pixel i in the source, for every neighbor j not in the source, take the difference of the value parameter of i and the intensity in the target image of j minus the difference of the intensity in the source image of i and the intensity in the source image of j. The three results of Poisson blending are below, each with the penguins matched to different images, as well as the result for one of naive blending without Poisson to see how Poisson blending helped. In order to make my code run faster, I also did some optimization in how I wrote out the equations. Using a sparse matrix was really key because it reduces time, and I used spsolve to solve for the value parameters.</p>
 
         <div class="image-row">
             <figure>
                 <img src="original_image.png" alt="Original Image">
-                <figcaption>Original Image</figcaption>
+                <figcaption>This is the original snow image</figcaption>
             </figure>
+            <figure>
+                <img src="original_penguin.png" alt="Original Penguin">
+                <figcaption>This is the original penguin image</figcaption>
+            </figure>
+            <figure>
+                <img src="original_blended.png" alt="Original Blended">
+                <figcaption>This is the original penguin after being cropped in the snow. As you can see, the penguin has a lot of white around him and there are seams so it is not clearly blended.</figcaption>
+            </figure>
+        </div>
+
+        <div class="image-container">
+            <figure>
+                <img src="poisson_blended.png" alt="Poisson Blended Output">
+                <figcaption>After poisson blending, the penguin fits in much clearer and it is very hard to see seams.</figcaption>
+            </figure>
+        </div>
+
+        <div class="image-container">
+            <figure>
+                <img src="second_penguin_poisson.png" alt="Second Penguin Poisson">
+                <figcaption>In this image, we have the second penguin on the second image. We see that the second penguin has a little more blurriness around the edges, which is resolved later by the bells and whistles, because the white around it is slightly different than the first. However, the poisson blending still makes a pretty good result.</figcaption>
+            </figure>
+        </div>
+
+        <div class="image-container">
+            <figure>
+                <img src="third_penguin_poisson.png" alt="Third Penguin Poisson">
+                <figcaption>Here is the first penguin on the second snow image. This also does pretty well. The reason these three images are generally pretty good, is the colors in the source and the corresponding target area are very similar.</figcaption>
+            </figure>
+        </div>
+
+        <h3>Bells &amp; Whistles: Mixed Gradients</h3>
+        <p>For Bells and Whistles, I decided to implement mixed gradients. For mixed gradients, you do the exact process of Poisson blending except that when you are adding the difference in source gradient at each step, you take the max of the absolute values of the source and the target gradients, and add that instead. This allows for more seamless blending when there is a big difference in magnitudes, for example with a logo with white around it, as you will see below. Here, you can see the result of the Cal Logo blended onto the ski slope with poisson blending and mixed gradients. It looks a lot better with mixed gradients, where it seems to fit in more, whereas with Poisson you can pretty clearly see the seam.</p>
+
+        <div class="image-row">
+            <figure>
+                <img src="cal_poisson.png" alt="Cal Poisson">
+                <img src="cal_mixed.png" alt="Cal Mixed">
+                <figcaption>Looking at the two, it is clear that mixed gradients and taking the stronger absolute gradient here makes a significant difference in the blending process.</figcaption>
+            </figure>
+        </div>
+
+        <div class="image-row">
+            <figure>
+                <img src="maru_mixed.png" alt="Maru Mixed">
+                <img src="maru_poisson.png" alt="Maru Poisson">
+                <figcaption>Here, however, we have a picture of my cat Maru and we see that Poisson and Mixed Gradient outputs look almost identical. The reason for this is because here there are no harsh edges or strong gradients around where the source image is entering the target image, so it should be a sort of white wall, which is exactly what is also around the logo, and as a result it just blends without needing mixed gradients. Mixed gradients are more useful in situations where there is a big gradient difference between the source and target, and you want to blend something as if it is sort of behind or interweaved with the target image.</figcaption>
+            </figure>
+        </div>
+
+</body>
+</html>
