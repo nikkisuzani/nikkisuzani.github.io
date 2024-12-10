@@ -26,20 +26,26 @@
             margin: 20px 0;
         }
 
-        .image-row img {
-            max-width: 30%;
-            height: auto;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+        .image-row figure {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        img {
-            max-width: 100%;
-            height: auto;
+        /* Shared styles for images and videos */
+        img, video {
+            width: 400px;
+            height: 300px;
+            object-fit: cover;
             border: 2px solid #ddd;
             border-radius: 8px;
             display: block; 
             margin: 0 auto; 
+        }
+
+        video {
+            /* Hide video controls for a seamless GIF-like experience */
+            controls: none;
         }
 
         figcaption {
@@ -77,40 +83,37 @@
 
         <div class="image-container">
             <figure>
-                <img src="output.gif" alt="Depth Refocusing Output">
+                <video src="output.gif" autoplay loop muted></video>
                 <figcaption>Description for output.gif.</figcaption>
             </figure>
         </div>
 
         <div class="image-container">
             <figure>
-                <img src="flower_output.gif" alt="Depth Refocusing Flower Output">
+                <video src="flower_output.gif" autoplay loop muted></video>
                 <figcaption>Description for flower_output.gif.</figcaption>
             </figure>
         </div>
 
-        <!-- Aperture Adjustment Subsection -->
         <h3>Aperture Adjustment</h3>
         <p>Placeholder text.</p>
 
         <div class="image-container">
             <figure>
-                <img src="aperture_output.gif" alt="Aperture Adjustment Output">
+                <video src="aperture_output.gif" autoplay loop muted></video>
                 <figcaption>Description for aperture_output.gif.</figcaption>
             </figure>
         </div>
 
         <div class="image-container">
             <figure>
-                <img src="flower_aperture_output.gif" alt="Aperture Adjustment Flower Output">
+                <video src="flower_aperture_output.gif" autoplay loop muted></video>
                 <figcaption>Description for flower_aperture_output.gif.</figcaption>
             </figure>
         </div>
 
-    <!-- Gradient Domain Fusion Section -->
     <h2>Gradient Domain Fusion</h2>
 
-        <!-- Toy Problem Subsection -->
         <h3>Toy Problem</h3>
         <p>[Placeholder text for Toy Problem]</p>
 
@@ -121,7 +124,6 @@
             </figure>
         </div>
 
-        <!-- Poisson Blending Subsection -->
         <h3>Poisson Blending</h3>
         <p>[Placeholder text for Poisson Blending]</p>
 
@@ -161,7 +163,6 @@
             </figure>
         </div>
 
-        <!-- Bells & Whistles: Mixed Gradients Subsection -->
         <h3>Bells &amp; Whistles: Mixed Gradients</h3>
         <p>[Placeholder text for Bells &amp; Whistles: Mixed Gradients]</p>
 
