@@ -32,20 +32,15 @@
             align-items: center;
         }
 
-        /* Shared styles for images and videos */
+        /* Updated styles for images and videos */
         img, video {
-            width: 500px;
-            height: 500px;
+            max-width: 100%;
+            height: auto;
             object-fit: cover;
             border: 2px solid #ddd;
             border-radius: 8px;
             display: block; 
             margin: 0 auto; 
-        }
-
-        video {
-            /* Hide video controls for a seamless GIF-like experience */
-            controls: none;
         }
 
         figcaption {
@@ -83,14 +78,14 @@
 
         <div class="image-container">
             <figure>
-                <img src="output.gif"></img>
+                <img src="output.gif" alt="Output GIF">
                 <figcaption>Description for output.gif.</figcaption>
             </figure>
         </div>
 
         <div class="image-container">
             <figure>
-                <img src="flower_output.gif"></img>
+                <img src="flower_output.gif" alt="Flower Output GIF">
                 <figcaption>Description for flower_output.gif.</figcaption>
             </figure>
         </div>
@@ -100,14 +95,14 @@
 
         <div class="image-container">
             <figure>
-                <img src="aperture_output.gif"></img>
+                <img src="aperture_output.gif" alt="Aperture Output GIF">
                 <figcaption>Description for aperture_output.gif.</figcaption>
             </figure>
         </div>
 
         <div class="image-container">
             <figure>
-                <img src="flower_aperture_output.gif"></img>
+                <img src="flower_aperture_output.gif" alt="Flower Aperture Output GIF">
                 <figcaption>Description for flower_aperture_output.gif.</figcaption>
             </figure>
         </div>
